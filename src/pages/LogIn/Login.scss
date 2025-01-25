@@ -1,0 +1,92 @@
+.login-page-wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+
+.login-container{
+    display: flex;
+    flex-direction: column;
+    border: whitesmoke solid 3px;
+    border-radius: 1em;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    box-shadow:0 4px 8px 0 rgba(0,0,0,0.5);
+    width: 40%;
+
+}
+
+.login-heading-1{
+    font-size: x-large;
+    color: yellow;
+    margin-top: 5px;
+    margin-bottom: 0px;
+}
+
+.login-heading-2{
+    font-size: large;
+    margin-bottom: 0;
+    font-weight: 100;
+}
+
+.login-heading-3{
+    font-weight: 100;
+}
+
+.login-form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    margin: 10px;
+    width: 100%;
+    .login-forget-password{
+        margin-left: 52px;
+        font-size: small
+    };
+    .login-create-account{
+        margin-left: 32px;
+        font-size: small;
+    }
+    
+}
+
+.login-form-inputs{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+a{
+    text-decoration: none;
+}
+
+.login-form-btns{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+    padding: 20px;
+}
+
+.login-footer{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    width: 40%;
+    margin: 10px;
+}
+
+span{
+    font-size: small;
+    margin-right: 15px;
+    font-weight: lighter;
+}
+
