@@ -95,3 +95,22 @@ export const getArchiveNotes = function (uri) {
     });
 }
 
+
+export const getTrashNotes = function (uri) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`${baseUrl}/${uri}`, {
+                headers: {
+                    "x-token": `Bearer ${localStorage.getItem("token")}`
+                },
+                params: {
+                    email: localStorage.getItem("userEmail")
+                }
+            });
+            resolve(response);
+        } catch (error) {
+            reject(error.response);
+        }
+    });
+}
+

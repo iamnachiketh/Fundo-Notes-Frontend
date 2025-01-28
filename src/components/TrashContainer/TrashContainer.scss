@@ -1,0 +1,14 @@
+.trash-container {
+    width: 80%;
+}
+
+
+.trash-body-container {
+    display: grid;
+    grid-template-columns: repeat(4, 250px); 
+    gap: 20px;
+    justify-content: center; 
+    padding: 5px;
+    width: 100%; 
+    box-sizing: border-box;
+}

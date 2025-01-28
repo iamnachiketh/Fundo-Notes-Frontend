@@ -20,8 +20,7 @@ function ArchiveContainer() {
   return (
     <div className="archive-container">
       <div className="archive-body-container">
-        {
-          notesList.map((data) => (
+        {notesList && notesList.map((data) => (
             <NoteCard key={data.noteId} noteDetails={data} container={"archive"} />
           ))
         }
