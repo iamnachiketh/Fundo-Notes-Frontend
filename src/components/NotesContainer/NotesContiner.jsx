@@ -32,7 +32,7 @@ function NotesContainer() {
             .catch((error) => {
                 setOpen({
                     isOpen: true,
-                    message: response.data.message
+                    message: error.data.message
                 })
                 console.log(error);
             })
@@ -69,7 +69,7 @@ function NotesContainer() {
             </div>
             <Snackbar
                 open={open.isOpen}
-                autoHideDuration={10000}
+                autoHideDuration={5000}
                 onClose={handleClose}
                 message={open.message}
                 action={action}

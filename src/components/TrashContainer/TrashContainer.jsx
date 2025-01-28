@@ -14,7 +14,7 @@ function TrashContainer() {
   const [open, setOpen] = useState({
     isOpen: false,
     message: ""
-})
+  })
 
   useEffect(() => {
     getTrashNotes("notes/trash/data")
@@ -23,35 +23,34 @@ function TrashContainer() {
           isOpen: true,
           message: response.data.message
         })
-        console.log(response);
         setNotesList(response.data.data);
       })
       .catch((error) => {
         setOpen({
           isOpen: true,
-          message: response.data.message
+          message: error.data.message
         })
         console.log(error);
       });
-  },[])
+  }, [])
 
   const handleClose = () => setOpen({
     isOpen: false,
     message: ""
-});
+  });
 
   const action = (
     <>
-        <IconButton
-            size="small"
-            aria-label="close"
-            color="inherit"
-            onClick={handleClose}
-        >
-            <CloseIcon fontSize="small" />
-        </IconButton>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
     </>
-);
+  );
 
   return (
     <div className="trash-container">
