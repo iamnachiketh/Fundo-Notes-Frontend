@@ -1,7 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { TextField, Button } from "@mui/material";
-import "./Login.scss";
 import { login } from "../../utils/Api";
+import "./Login.scss";
+import Snackbar from '@mui/material/Snackbar';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 
 function Login() {
   const [data, setData] = useState({
@@ -15,7 +19,16 @@ function Login() {
     errorMessageForPassword: ""
   });
 
-  const handleLogin = function () {
+  const [open, setOpen] = useState({
+    isOpen: false,
+    message: ""
+  })
+
+  const navigate = useNavigate();
+
+  const handleLogin = async function (e) {
+
+    e.preventDefault();
 
     if (data.email === "" && data.password === "") {
       setError({
@@ -63,9 +76,49 @@ function Login() {
       return;
     }
 
-    login("login", data);
+    const response = await login("users/login", data);
+
+    const errorCodeList = [404, 401, 501, 500];
+
+    if (errorCodeList.includes(response.data.status)) {
+
+      setOpen({
+        isOpen: true,
+        message: response.data.message
+      })
+      return;
+    }
+
+    setOpen({
+      isOpen: true,
+      message: response.data.message
+    })
+
+    localStorage.setItem("token", response.data.accessToken);
+
+    let userEmail = data.email;
+
+    navigate("/home/notes", { state: { userEmail } });
 
   }
+
+  const handleClose = () => setOpen({
+    isOpen: false,
+    message: ""
+  });
+
+  const action = (
+    <>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </>
+  );
 
   return (
     <>
@@ -90,6 +143,7 @@ function Login() {
                 id="outlined-basic"
                 variant="outlined"
                 label="Password"
+                type="password"
                 style={{ width: "80%" }}
                 onChange={(e) => setData({ ...data, password: e.target.value })}
               />
@@ -118,6 +172,13 @@ function Login() {
           <span>Terms</span>
         </div>
       </div>
+      <Snackbar
+        open={open.isOpen}
+        autoHideDuration={10000}
+        onClose={handleClose}
+        message={open.message}
+        action={action}
+      />
     </>
   );
 }

@@ -1,0 +1,57 @@
+.note-wrapper {
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    height: 120px;
+    max-height: 250px;
+    padding: 16px;
+    box-sizing: border-box;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.note-wrapper:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+
+    .note-icons {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+.note-title {
+    font-size: 18px;
+    font-weight: 400;
+    margin: 0 0 8px;
+}
+
+.note-desc {
+    font-size: 14px;
+    color: #555;
+    margin: 0;
+}
+
+.note-icons {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+
+    svg {
+        font-size: 20px;
+        color: #757575;
+        cursor: pointer;
+        transition: color 0.2s ease;
+
+        &:hover {
+            color: #000;
+        }
+    }
+}

@@ -39,6 +39,7 @@
         background: #f1f3f4;
         font-size: 1em;
         outline: none;
+        border: none;
     }
 }
 
@@ -49,4 +50,8 @@
 .dashboard-search-bar-container {
     width: 43em;
     margin-left: -350px;
+}
+
+.dashboard-user-info{
+    margin: 0;
 }

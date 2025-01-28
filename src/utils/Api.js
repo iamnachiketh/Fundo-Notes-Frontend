@@ -1,26 +1,59 @@
 import axios from "axios";
 
-export const login = function (uri, data) {
+const baseUrl = "http://localhost:4000/api/v1";
 
-    axios.post(`http://localhost:4000/api/v1/users/${uri}`, data)
-        .then((response) => {
-            console.log(response)
-        })
-        .catch((error) => {
-            console.log(error)
-        });
+export const login = async function (uri, data) {
+
+    try {
+
+        const response = await axios.post(`${baseUrl}/${uri}`, data);
+        return response;
+
+    } catch (error) {
+        return error.response;
+    }
 }
 
-export const signup = function (uri, data) {
+export const signup = async function (uri, data) {
 
     const { confirmPassword, ...newData } = data;
+
+    try {
+
+        const response = await axios.post(`${baseUrl}/${uri}`, newData);
+
+        return response;
+
+    } catch (error) {
+        console.log(error.response.status);
+        return error.response;
+    }
+
+}
+
+export const getAllNotes = async function (uri, userEmail) {
+
+    return new Promise(async (resolve, reject)=>{
+        try {
+
+            const response = await axios.get(`${baseUrl}/${uri}`, {
+                headers: {
+                    "x-token": `Bearer ${localStorage.getItem("token")}`
+                },
+                params: {
+                    userEmail,
+                    page: 1,
+                    limit: 5
+                }
+            });
     
-    axios.post(`http://localhost:4000/api/v1/users/${uri}`, newData)
-        .then((response) => {
-            console.log(response)
-        })
-        .catch((error) => {
-            console.log(error)
-        });
+            resolve(response);
+    
+        } catch (error) {
+            console.log("This is an error: ", error);
+            reject(error.response);
+        }
+    });
+    
 }
 

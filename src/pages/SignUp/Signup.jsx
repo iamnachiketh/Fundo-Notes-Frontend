@@ -1,9 +1,16 @@
+import { useNavigate } from "react-router-dom"
 import "./Signup.scss";
 import { TextField, Button } from "@mui/material";
 import { useState } from "react";
 import { signup } from "../../utils/Api";
+import Snackbar from '@mui/material/Snackbar';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+
 
 function Signup() {
+
+  const navigate = useNavigate();
 
   const [data, setData] = useState({
     name: "",
@@ -17,9 +24,14 @@ function Signup() {
     lastName: ""
   });
 
+  const [open, setOpen] = useState({
+    isOpen: false,
+    message: ""
+  });
+
   const [error, setError] = useState({});
 
-  const handleSignUp = function () {
+  const handleSignUp = async function () {
 
     const fullName = `${name.firstName.trim()} ${name.lastName.trim()}`;
 
@@ -81,9 +93,41 @@ function Signup() {
 
     console.log({ ...data, name: fullName });
 
-    signup("register", { ...data, name: fullName });
+    let response = await signup("users/register", { ...data, name: fullName });
 
+    if(response.data.status === 409){
+      setOpen({
+        isOpen: true,
+        message: response.data.message
+      })
+      return;
+    }
+
+    setOpen({
+      isOpen: true,
+      message: response.data.message
+    });
+
+    navigate("/");
   }
+
+  const handleClose = () => setOpen({
+    isOpen: false,
+    message: ""
+  });
+
+  const action = (
+    <>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </>
+  );
 
   return (
     <>
@@ -137,6 +181,7 @@ function Signup() {
                   id="outlined-basic"
                   variant="outlined"
                   label="Password"
+                  type="password"
                   style={{ marginRight: "20px" }}
                   onChange={(e) => setData({ ...data, password: e.target.value })}
                 />
@@ -145,6 +190,7 @@ function Signup() {
                   id="outlined-basic"
                   variant="outlined"
                   label="Confirm"
+                  type="password"
                   onChange={(e) => setData({ ...data, confirmPassword: e.target.value })}
                 />
                 <p>
@@ -178,6 +224,13 @@ function Signup() {
           <span>Terms</span>
         </div>
       </div>
+      <Snackbar
+        open={open.isOpen}
+        autoHideDuration={10000}
+        onClose={handleClose}
+        message= {open.message}
+        action={action}
+      />
     </>
   );
 }
