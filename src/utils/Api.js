@@ -31,9 +31,9 @@ export const signup = async function (uri, data) {
 
 }
 
-export const getAllNotes = async function (uri, userEmail) {
+export const getAllNotes = function (uri, userEmail) {
 
-    return new Promise(async (resolve, reject)=>{
+    return new Promise(async (resolve, reject) => {
         try {
 
             const response = await axios.get(`${baseUrl}/${uri}`, {
@@ -46,14 +46,52 @@ export const getAllNotes = async function (uri, userEmail) {
                     limit: 5
                 }
             });
-    
+
             resolve(response);
-    
+
         } catch (error) {
             console.log("This is an error: ", error);
             reject(error.response);
         }
     });
-    
+
+}
+
+
+export const addNote = async function (uri, data) {
+    try {
+
+        console.log(data);
+        const response = await axios.post(`${baseUrl}/${uri}`, data, {
+            headers: {
+                "x-token": `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+
+        return response;
+
+    } catch (error) {
+        console.log(error);
+        return error.response;
+    }
+}
+
+
+export const getArchiveNotes = function (uri) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await axios.get(`${baseUrl}/${uri}`, {
+                headers: {
+                    "x-token": `Bearer ${localStorage.getItem("token")}`
+                },
+                params: {
+                    email: localStorage.getItem("userEmail")
+                }
+            });
+            resolve(response);
+        } catch (error) {
+            reject(error.response);
+        }
+    });
 }
 

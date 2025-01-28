@@ -96,9 +96,9 @@ function Login() {
 
     localStorage.setItem("token", response.data.accessToken);
 
-    let userEmail = data.email;
+    localStorage.setItem("userEmail", data.email);
 
-    navigate("/home/notes", { state: { userEmail } });
+    navigate("/home/notes");
 
   }
 
