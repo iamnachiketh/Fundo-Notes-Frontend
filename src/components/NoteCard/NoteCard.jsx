@@ -13,11 +13,12 @@ import MenuItem from '@mui/material/MenuItem';
 import {
   setToArchiveNotes,
   permanentDelete,
-  restoreNote
+  restoreNote,
+  unarchiveNote
 } from "../../utils/Api";
 
 
-function Note({ noteDetails, container, ...props }) {
+function Note({ noteDetails, container, handleUpdateList, ...props }) {
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -38,15 +39,14 @@ function Note({ noteDetails, container, ...props }) {
     if (action === "archive") {
 
       const response = await setToArchiveNotes(
-        `notes/${noteDetails.noteId}/archive`,
-        email
+        `notes/${noteDetails.noteId}/archive`
       );
       if (errorCodeList.includes(response.data.status)) {
         console.log(response.data.message);
         return;
       }
       console.log(response);
-      return;
+
     } else if (action === "delete") {
       const response = await permanentDelete(`notes/${noteDetails.noteId}/delete`);
 
@@ -56,6 +56,7 @@ function Note({ noteDetails, container, ...props }) {
       }
 
       console.log(response);
+
     } else if (action === "restore") {
       const response = await restoreNote(`notes/${noteDetails.noteId}/restore`);
 
@@ -65,7 +66,20 @@ function Note({ noteDetails, container, ...props }) {
       }
 
       console.log(response);
+    } else if (action === "unarchive") {
+      const response = await unarchiveNote(`notes/${noteDetails.noteId}/unarchive`);
+
+      if (errorCodeList.includes(response.data.status)) {
+        console.log(response.data.message);
+        return;
+      }
+
+      console.log(response);
     }
+
+    console.log(handleUpdateList);
+
+    handleUpdateList(action, noteDetails);
 
   }
 
@@ -78,7 +92,7 @@ function Note({ noteDetails, container, ...props }) {
           container === "trash" ? (
             <>
               <DeleteForeverIcon onClick={() => handleNoteIconsClick("delete")} />
-              <RestoreFromTrashIcon onClick = {() => handleNoteIconsClick("restore")}/>
+              <RestoreFromTrashIcon onClick={() => handleNoteIconsClick("restore")} />
             </>
           ) : (
             <>

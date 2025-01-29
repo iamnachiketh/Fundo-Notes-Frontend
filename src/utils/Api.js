@@ -43,7 +43,7 @@ export const getAllNotes = function (uri, userEmail) {
                 params: {
                     userEmail,
                     page: 1,
-                    limit: 5
+                    limit: 15
                 }
             });
 
@@ -160,6 +160,21 @@ export const restoreNote = async function(uri){
         return response;
 
     }catch(error) {
+        return error.response;
+    }
+}
+
+export const unarchiveNote = async function(uri){
+    try{
+        const response = await axios.put(`${baseUrl}/${uri}`, {
+            email: localStorage.getItem("userEmail")
+        },{
+            headers:{
+                "x-token": `Bearer ${localStorage.getItem("token")}`
+            }
+        })
+        return response;
+    }catch(error){
         return error.response;
     }
 }

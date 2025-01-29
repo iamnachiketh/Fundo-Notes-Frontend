@@ -14,7 +14,7 @@ import "./AddNote.scss";
 
 
 
-function AddNote() {
+function AddNote({ handleUpdateList }) {
 
     const [toggleBar, setToggleBar] = useState(false);
 
@@ -34,7 +34,7 @@ function AddNote() {
 
     const handleAddNote = function () {
 
-        if(!note.title.trim() || !note.desc.trim()){
+        if (!note.title.trim() || !note.desc.trim()) {
             setOpen({
                 isOpen: true,
                 message: "Please enter title and description"
@@ -58,7 +58,7 @@ function AddNote() {
                     isOpen: true,
                     message: response.data.message
                 })
-                console.log(response);
+                handleUpdateList("addNote", response.data.data);
             })
             .catch((error) => {
                 setOpen({
@@ -150,7 +150,7 @@ function AddNote() {
             </div>)}
             <Snackbar
                 open={open.isOpen}
-                autoHideDuration={5000}
+                autoHideDuration={2000}
                 onClose={handleClose}
                 message={open.message}
                 action={action}

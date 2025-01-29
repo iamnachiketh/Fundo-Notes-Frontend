@@ -27,11 +27,11 @@ function NotesContainer() {
     useEffect(() => {
         getAllNotes("notes", userEmail)
             .then((response) => {
-                if(response.data.status!==200)
-                setOpen({
-                    isOpen: true,
-                    message: response.data.message
-                })
+                if (response.data.status !== 200)
+                    setOpen({
+                        isOpen: true,
+                        message: response.data.message
+                    })
                 setNotesList(response?.data?.data);
             })
             .catch((error) => {
@@ -56,14 +56,36 @@ function NotesContainer() {
         </>
     );
 
+    const handleUpdateList = (action, data) => {
+        
+        if (action === "addNote") {
+            setNotesList([
+                ...notesList,
+                data
+            ]);
+            return;
+        }
+
+        if (action === "archive") {
+            const newNoteList = notesList.filter((value) => data?.noteId !== value?.noteId);
+            setNotesList(newNoteList);
+            return;
+        }
+    }
+
     return (
         <div className="notes-container">
             <div className="notes-add-note">
-                <AddNote />
+                <AddNote handleUpdateList={handleUpdateList} />
             </div>
             <div className="notes-body-container">
                 {notesList && notesList.map((data) => (
-                    <NoteCard key={data.noteId} noteDetails={data} container={"notes"} />
+                    <NoteCard
+                        key={data.noteId}
+                        noteDetails={data}
+                        container={"notes"}
+                        handleUpdateList={handleUpdateList}
+                    />
                 ))
                 }
             </div>
