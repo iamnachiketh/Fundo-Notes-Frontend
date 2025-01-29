@@ -10,11 +10,11 @@ import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import "./NoteBar.scss";
+import "./AddNote.scss";
 
 
 
-function NoteBar(props) {
+function AddNote() {
 
     const [toggleBar, setToggleBar] = useState(false);
 
@@ -34,17 +34,25 @@ function NoteBar(props) {
 
     const handleAddNote = function () {
 
+        if(!note.title.trim() || !note.desc.trim()){
+            setOpen({
+                isOpen: true,
+                message: "Please enter title and description"
+            });
+            return;
+        }
+
         const uniqueId = nanoid();
 
-        setNote({
+        const updateNote = {
             ...note,
             noteId: `NOTE${uniqueId}`,
-            userEmail: props.userEmail
-        })
+            userEmail: localStorage.getItem("userEmail")
+        }
 
         setToggleBar(false);
 
-        addNote("notes", note)
+        addNote("notes", updateNote)
             .then((response) => {
                 setOpen({
                     isOpen: true,
@@ -151,4 +159,4 @@ function NoteBar(props) {
     )
 }
 
-export default NoteBar
+export default AddNote;

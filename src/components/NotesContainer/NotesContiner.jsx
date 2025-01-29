@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { getAllNotes } from "../../utils/Api";
 import "./NotesContainer.scss";
 import NoteCard from "../NoteCard/NoteCard";
-import NoteBar from "../NoteBar/NoteBar";
+import AddNote from "../AddNote/AddNote";
 import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -19,10 +19,15 @@ function NotesContainer() {
         message: ""
     })
 
+    const handleCloseSnackBar = () => setOpen({
+        isOpen: false,
+        message: ""
+    });
 
     useEffect(() => {
         getAllNotes("notes", userEmail)
             .then((response) => {
+                if(response.data.status!==200)
                 setOpen({
                     isOpen: true,
                     message: response.data.message
@@ -38,10 +43,6 @@ function NotesContainer() {
             })
     }, []);
 
-    const handleClose = () => setOpen({
-        isOpen: false,
-        message: ""
-    });
 
     const action = (
         <>
@@ -49,7 +50,6 @@ function NotesContainer() {
                 size="small"
                 aria-label="close"
                 color="inherit"
-                onClick={handleClose}
             >
                 <CloseIcon fontSize="small" />
             </IconButton>
@@ -59,7 +59,7 @@ function NotesContainer() {
     return (
         <div className="notes-container">
             <div className="notes-add-note">
-                <NoteBar userEmail={userEmail} />
+                <AddNote />
             </div>
             <div className="notes-body-container">
                 {notesList && notesList.map((data) => (
@@ -69,8 +69,8 @@ function NotesContainer() {
             </div>
             <Snackbar
                 open={open.isOpen}
-                autoHideDuration={5000}
-                onClose={handleClose}
+                autoHideDuration={2000}
+                onClose={handleCloseSnackBar}
                 message={open.message}
                 action={action}
             />

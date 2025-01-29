@@ -114,3 +114,55 @@ export const getTrashNotes = function (uri) {
     });
 }
 
+export const setToArchiveNotes = async function (uri) {
+    try {
+        const response = await axios.put(`${baseUrl}/${uri}`, {
+            userEmail: localStorage.getItem("userEmail")
+        }, {
+            headers: {
+                "x-token": `Bearer ${localStorage.getItem("token")}`
+            }
+        })
+        return response;
+    } catch (error) {
+        return error.response;
+    }
+}
+
+export const permanentDelete = function(uri){
+        try{
+            const response = axios.delete(`${baseUrl}/${uri}`,{
+                headers:{
+                    "x-token": `Bearer ${localStorage.getItem("token")}`
+                },
+                params:{
+                    userEmail: localStorage.getItem("userEmail")
+                }
+            });
+
+            return response;
+        }catch(error){
+            return error.response;
+        }
+}
+
+
+export const restoreNote = async function(uri){
+    try{
+        const response = await axios.put(`${baseUrl}/${uri}`, {
+            email: localStorage.getItem("userEmail")
+        }, {
+            headers: {
+                "x-token": `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+
+        return response;
+
+    }catch(error) {
+        return error.response;
+    }
+}
+
+
+

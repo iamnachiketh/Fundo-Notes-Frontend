@@ -1,6 +1,25 @@
-.sidebar-container{
-    width: 20%;
-    height: 100vh;
-    background-color: whitesmoke;
-    border: 4px solid grey;
+.sidebar-container {
+    width: 10%;
+    height: 100vh; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 15px;
+    position: fixed;
+    left: -40px;
+    top: 70px;
+
+    .sidebar-icon {
+        width: 35px;
+        height: 40px;
+        padding: 5px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out, transform 0.2s;
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+            transform: scale(1.1);
+        }
+    }
 }

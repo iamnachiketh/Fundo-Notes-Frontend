@@ -1,21 +1,21 @@
 .notes-container {
-    width: 80%;
+    width: 90%;
 }
 
 .notes-add-note {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 20px 200px 20px 0;
+    margin: 20px 20px 20px 20px;
 }
 
 
 .notes-body-container {
     display: grid;
-    grid-template-columns: repeat(4, 230px);
-    gap: 10px;
+    grid-template-columns: repeat(3, 240px);
+    gap: 15px;
     justify-content: center;
-    padding: 5px;
+    padding: 10px;
 
 }
 

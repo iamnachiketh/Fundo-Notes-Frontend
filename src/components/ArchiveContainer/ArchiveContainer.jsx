@@ -20,10 +20,11 @@ function ArchiveContainer() {
   useEffect(() => {
     getArchiveNotes("notes/archive/data")
       .then((response) => {
-        setOpen({
-          isOpen: true,
-          message: response.data.message
-        })
+        if (response.data.status !== 200)
+          setOpen({
+            isOpen: true,
+            message: response.data.message
+          })
         setNoteList(response.data.data);
       })
       .catch((error) => {
@@ -35,7 +36,7 @@ function ArchiveContainer() {
       })
   }, []);
 
-  const handleClose = () => setOpen({
+  const handleSnackBarClose = () => setOpen({
     isOpen: false,
     message: ""
   });
@@ -46,7 +47,6 @@ function ArchiveContainer() {
         size="small"
         aria-label="close"
         color="inherit"
-        onClick={handleClose}
       >
         <CloseIcon fontSize="small" />
       </IconButton>
@@ -63,8 +63,8 @@ function ArchiveContainer() {
       </div>
       <Snackbar
         open={open.isOpen}
-        autoHideDuration={5000}
-        onClose={handleClose}
+        autoHideDuration={2000}
+        onClose={handleSnackBarClose}
         message={open.message}
         action={action}
       />

@@ -3,7 +3,7 @@ import { getTrashNotes } from "../../utils/Api";
 import "./TrashContainer.scss";
 import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
+import NoteCard from "../NoteCard/NoteCard";
 
 
 
@@ -19,6 +19,7 @@ function TrashContainer() {
   useEffect(() => {
     getTrashNotes("notes/trash/data")
       .then((response) => {
+        if(response.data.status!==200)
         setOpen({
           isOpen: true,
           message: response.data.message
@@ -34,7 +35,7 @@ function TrashContainer() {
       });
   }, [])
 
-  const handleClose = () => setOpen({
+  const handleCloseSnackBar = () => setOpen({
     isOpen: false,
     message: ""
   });
@@ -45,9 +46,7 @@ function TrashContainer() {
         size="small"
         aria-label="close"
         color="inherit"
-        onClick={handleClose}
       >
-        <CloseIcon fontSize="small" />
       </IconButton>
     </>
   );
@@ -62,9 +61,9 @@ function TrashContainer() {
       </div>
       <Snackbar
         open={open.isOpen}
-        autoHideDuration={5000}
-        onClose={handleClose}
+        autoHideDuration={2000}
         message={open.message}
+        onClose={handleCloseSnackBar}
         action={action}
       />
     </div>
