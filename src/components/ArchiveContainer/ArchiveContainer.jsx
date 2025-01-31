@@ -36,6 +36,24 @@ function ArchiveContainer() {
       })
   }, []);
 
+
+  const handleUpdateList = (action, data) => {
+    if (action === "unarchive" || action === "trash") {
+      const newNoteList = notesList.filter((value) => data.noteId !== value.noteId);
+      setNoteList(newNoteList);
+      return;
+    }
+
+    if(action === "color"){
+      const newNoteList = notesList.filter((value) => data.noteId !== value.noteId);
+      setNoteList([
+        ...newNoteList,
+        data
+      ])
+    }
+
+  }
+
   const handleSnackBarClose = () => setOpen({
     isOpen: false,
     message: ""
@@ -57,7 +75,7 @@ function ArchiveContainer() {
     <div className="archive-container">
       <div className="archive-body-container">
         {notesList && notesList.map((data) => (
-          <NoteCard key={data.noteId} noteDetails={data} container={"archive"} />
+          <NoteCard key={data.noteId} noteDetails={data} container={"archive"} handleUpdateList={handleUpdateList} />
         ))
         }
       </div>

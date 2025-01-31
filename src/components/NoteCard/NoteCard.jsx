@@ -1,5 +1,6 @@
 import "./NoteCard.scss";
 import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import PaletteIcon from '@mui/icons-material/Palette';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import GroupsIcon from '@mui/icons-material/Groups';
@@ -10,35 +11,64 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import {
-  setToArchiveNotes,
-  permanentDelete,
-  restoreNote,
-  unarchiveNote
-} from "../../utils/Api";
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import AddNote from "../AddNote/AddNote";
+import * as Api from "../../utils/Api";
 
+function NoteCard({ noteDetails, container, handleUpdateList, ...props }) {
 
-function Note({ noteDetails, container, handleUpdateList, ...props }) {
+  const navigate = useNavigate();
 
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorMoreEl, setAnchorMoreEl] = useState(null);
 
-  const open = Boolean(anchorEl);
+  const [anchorPaletteEl, setAnchorPaletteEl] = useState(null);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const [searchParams] = useSearchParams();
+
+  const noteId = searchParams.get("noteId");
+
+  const modal = noteId == noteDetails.noteId ? true : false;
+
+  const [openModal, setOpenModal] = useState(modal);
+
+  const openPalette = Boolean(anchorPaletteEl);
+
+  const openMore = Boolean(anchorMoreEl);
+
+  const handlePaletteClick = (event) => {
+    setAnchorPaletteEl(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleMoreClick = (event) => {
+    setAnchorMoreEl(event.currentTarget);
   };
 
-  const handleNoteIconsClick = async (action) => {
+  const handleMenuOpsAndClose = async (action) => {
+
+    const errorCodeList = [404, 500];
+
+    if (action === "trashNote") {
+      const response = await Api.trashNote(`notes/${noteDetails.noteId}/trash`);
+
+      if (errorCodeList.includes(response.data.status)) {
+        console.log(response.data.message);
+      } else {
+        console.log(response);
+        handleUpdateList("trash", response.data.data);
+      }
+
+    }
+    if (anchorMoreEl) setAnchorMoreEl(null);
+  };
+
+  const handleNoteIconsClick = async (action, data = "#ffffff") => {
 
     const errorCodeList = [404, 500, 403];
 
     if (action === "archive") {
 
-      const response = await setToArchiveNotes(
+      const response = await Api.setToArchiveNotes(
         `notes/${noteDetails.noteId}/archive`
       );
       if (errorCodeList.includes(response.data.status)) {
@@ -48,7 +78,7 @@ function Note({ noteDetails, container, handleUpdateList, ...props }) {
       console.log(response);
 
     } else if (action === "delete") {
-      const response = await permanentDelete(`notes/${noteDetails.noteId}/delete`);
+      const response = await Api.permanentDelete(`notes/${noteDetails.noteId}/delete`);
 
       if (errorCodeList.includes(response.data.status)) {
         console.log(response.data.message);
@@ -58,7 +88,7 @@ function Note({ noteDetails, container, handleUpdateList, ...props }) {
       console.log(response);
 
     } else if (action === "restore") {
-      const response = await restoreNote(`notes/${noteDetails.noteId}/restore`);
+      const response = await Api.restoreNote(`notes/${noteDetails.noteId}/restore`);
 
       if (errorCodeList.includes(response.data.status)) {
         console.log(response.data.message);
@@ -67,7 +97,17 @@ function Note({ noteDetails, container, handleUpdateList, ...props }) {
 
       console.log(response);
     } else if (action === "unarchive") {
-      const response = await unarchiveNote(`notes/${noteDetails.noteId}/unarchive`);
+      const response = await Api.unarchiveNote(`notes/${noteDetails.noteId}/unarchive`);
+
+      if (errorCodeList.includes(response.data.status)) {
+        console.log(response.data.message);
+        return;
+      }
+
+      console.log(response);
+    } else if (action === "color") {
+      console.log(action);
+      const response = await Api.updateColor(`notes/${noteDetails.noteId}/color`, data);
 
       if (errorCodeList.includes(response.data.status)) {
         console.log(response.data.message);
@@ -77,30 +117,67 @@ function Note({ noteDetails, container, handleUpdateList, ...props }) {
       console.log(response);
     }
 
-    console.log(handleUpdateList);
+    if (anchorPaletteEl) setAnchorPaletteEl(null);
 
-    handleUpdateList(action, noteDetails);
+    handleUpdateList(action, action === "color" ? { ...noteDetails, color: data } : noteDetails);
 
   }
 
   return (
-    <div className="note-wrapper">
-      <p className="note-title">{noteDetails?.title}</p>
-      <p className="note-desc">{noteDetails?.desc}</p>
+    <div
+      className="note-wrapper"
+      style={{ backgroundColor: noteDetails?.color }}
+    >
+      <p className="note-title" onClick={() => {
+        navigate(`?noteId=${noteDetails.noteId}`)
+        setOpenModal(true)
+      }}>{noteDetails?.title}</p>
+      <p className="note-desc" onClick={() => {
+        navigate(`?noteId=${noteDetails.noteId}`)
+        setOpenModal(true)
+      }}>{noteDetails?.desc}</p>
       <div className="note-icons">
         {
           container === "trash" ? (
             <>
-              <DeleteForeverIcon onClick={() => handleNoteIconsClick("delete")} />
-              <RestoreFromTrashIcon onClick={() => handleNoteIconsClick("restore")} />
+              <DeleteForeverIcon onClick={() => handleNoteIconsClick("delete")} titleAccess="delete" />
+              <RestoreFromTrashIcon onClick={() => handleNoteIconsClick("restore")} titleAccess="restore" />
             </>
           ) : (
             <>
-              <PaletteIcon />
+              <PaletteIcon
+                id="basic-palette"
+                aria-controls={open ? "basic-palette-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+                onClick={handlePaletteClick}
+              />
+              <Menu
+                id="basic-palette-menu"
+                anchorEl={anchorPaletteEl}
+                open={openPalette}
+                onClose={handleMenuOpsAndClose}
+                MenuListProps={{ "aria-labelledby": "basic-palette" }}
+              >
+                <div className="color-palate-cnt">
+                  <div className="col1" onClick={() => handleNoteIconsClick("color", '#FFFFFF')}></div>
+                  <div className="col2" onClick={() => handleNoteIconsClick("color", '#FAAFA8')}></div>
+                  <div className="col3" onClick={() => handleNoteIconsClick("color", '#F39F76')}></div>
+                  <div className="col4" onClick={() => handleNoteIconsClick("color", '#FFF8B8')}></div>
+                  <div className="col5" onClick={() => handleNoteIconsClick("color", '#E2F6D3')}></div>
+                  <div className="col6" onClick={() => handleNoteIconsClick("color", '#B4DDD3')}></div>
+                  <div className="col7" onClick={() => handleNoteIconsClick("color", '#D4E4ED')} ></div >
+                  <div className="col8" onClick={() => handleNoteIconsClick("color", '#AECCDC')} ></div >
+                  <div className="col9" onClick={() => handleNoteIconsClick("color", '#D3BFDB')} ></div >
+                  <div className="col10" onClick={() => handleNoteIconsClick("color", '#F6E2DD')} ></div >
+                  <div className="col11" onClick={() => handleNoteIconsClick("color", '#E9E3D4')} ></div >
+                  <div className="col12" onClick={() => handleNoteIconsClick("color", '#EFEFF1')} ></div >
+                </div>
+              </Menu>
               <GroupsIcon />
               {container === "notes" && container !== "trash" ?
-                <ArchiveIcon onClick={() => handleNoteIconsClick("archive")} /> :
-                <UnarchiveIcon onClick={() => handleNoteIconsClick("unarchive")} />
+                <ArchiveIcon onClick={() => handleNoteIconsClick("archive")} titleAccess="Archive" /> :
+                <UnarchiveIcon onClick={() => handleNoteIconsClick("unarchive")} titleAccess="UnArchive" />
               }
               <NotificationsIcon />
               <MoreVertIcon
@@ -108,31 +185,53 @@ function Note({ noteDetails, container, handleUpdateList, ...props }) {
                 aria-controls={open ? 'basic-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}
-                onClick={handleClick}
+                onClick={handleMoreClick}
               />
               <Menu
                 id="basic-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
+                anchorEl={anchorMoreEl}
+                open={openMore}
+                onClose={handleMenuOpsAndClose}
                 MenuListProps={{
                   'aria-labelledby': 'basic-more-icon',
                 }}
               >
-                <MenuItem onClick={handleClose}>Delete Note</MenuItem>
-                <MenuItem onClick={handleClose}>Add lable</MenuItem>
-                <MenuItem onClick={handleClose}>Add drawing</MenuItem>
-                <MenuItem onClick={handleClose}>Make a copy</MenuItem>
-                <MenuItem onClick={handleClose}>Show checkboxes</MenuItem>
-                <MenuItem onClick={handleClose}>Copy to Google Docs</MenuItem>
-                <MenuItem onClick={handleClose}>Version history</MenuItem>
+                <MenuItem onClick={() => handleMenuOpsAndClose("trashNote")}>Delete Note</MenuItem>
+                <MenuItem onClick={handleMenuOpsAndClose}>Add lable</MenuItem>
+                <MenuItem onClick={handleMenuOpsAndClose}>Add drawing</MenuItem>
+                <MenuItem onClick={handleMenuOpsAndClose}>Make a copy</MenuItem>
+                <MenuItem onClick={handleMenuOpsAndClose}>Show checkboxes</MenuItem>
+                <MenuItem onClick={handleMenuOpsAndClose}>Copy to Google Docs</MenuItem>
+                <MenuItem onClick={handleMenuOpsAndClose}>Version history</MenuItem>
               </Menu>
             </>
           )
         }
       </div>
+      <Modal
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <div style={{
+          display: "flex", 
+          minHeight: "100vh", 
+          alignItems: "center", 
+          justifyContent: "center"
+          }}>
+
+          <AddNote
+            handleUpdateList={handleUpdateList}
+            editMode={true}
+            noteDetails={noteDetails}
+            setOpenModal={setOpenModal}
+          />
+        </div>
+
+      </Modal>
     </div>
   )
 }
 
-export default Note
+export default NoteCard

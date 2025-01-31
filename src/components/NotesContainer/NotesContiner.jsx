@@ -66,10 +66,19 @@ function NotesContainer() {
             return;
         }
 
-        if (action === "archive") {
+        if (action === "archive" || action === "trash") {
             const newNoteList = notesList.filter((value) => data?.noteId !== value?.noteId);
             setNotesList(newNoteList);
             return;
+        }
+
+        if(action === "color" || action === "edit"){
+
+            const newNoteList = notesList.filter((value) => value.noteId !== data.noteId);
+            setNotesList([
+                ...newNoteList,
+                data
+            ]);
         }
     }
 

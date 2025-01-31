@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { customAlphabet } from "nanoid";
-import { addNote } from "../../utils/Api";
+import { addNote, updateNotes } from "../../utils/Api";
 import PaletteIcon from '@mui/icons-material/Palette';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import GroupsIcon from '@mui/icons-material/Groups';
@@ -14,25 +14,46 @@ import "./AddNote.scss";
 
 
 
-function AddNote({ handleUpdateList }) {
 
-    const [toggleBar, setToggleBar] = useState(false);
+function AddNote({ handleUpdateList, editMode = false, noteDetails = null, setOpenModal }) {
+
+    const [toggleBar, setToggleBar] = useState(editMode);
 
     const nanoid = customAlphabet("0123456789", 4);
 
-    const [note, setNote] = useState({
+    const [note, setNote] = useState(noteDetails ? noteDetails : {
         noteId: "",
         userEmail: "",
         title: "",
         desc: ""
     });
 
-    const [open, setOpen] = useState({
+    const [openSnackBar, setOpenSnackBar] = useState({
         isOpen: false,
         message: ""
     })
 
-    const handleAddNote = function () {
+    const handleAddNote = async function () {
+
+        if (editMode) {
+            const response = await updateNotes(`notes/${noteDetails.noteId}`, note);
+
+            if(response.data.status === 404){
+                setOpenSnackBar({
+                    isOpen: true,
+                    message: response.data.message
+                })
+                console.log(response.data.message);
+            }else{
+                setOpenSnackBar({
+                    isOpen: true,
+                    message: "Note has been edited"
+                })
+                handleUpdateList("edit", note);
+            }
+            setOpenModal(false);
+            return;
+        }
 
         if (!note.title.trim() || !note.desc.trim()) {
             setOpen({
@@ -59,6 +80,10 @@ function AddNote({ handleUpdateList }) {
                     message: response.data.message
                 })
                 handleUpdateList("addNote", response.data.data);
+                setNote({
+                    title: "",
+                    desc: ""
+                });
             })
             .catch((error) => {
                 setOpen({
@@ -69,7 +94,7 @@ function AddNote({ handleUpdateList }) {
             })
     }
 
-    const handleClose = () => setOpen({
+    const handleClose = () => setOpenSnackBar({
         isOpen: false,
         message: ""
     });
@@ -149,10 +174,10 @@ function AddNote({ handleUpdateList }) {
                 </div>
             </div>)}
             <Snackbar
-                open={open.isOpen}
+                open={openSnackBar.isOpen}
                 autoHideDuration={2000}
                 onClose={handleClose}
-                message={open.message}
+                message={openSnackBar.message}
                 action={action}
             />
         </>

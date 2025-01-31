@@ -46,7 +46,7 @@ export const getAllNotes = function (uri, userEmail) {
                     limit: 15
                 }
             });
-
+            console.log(response);
             resolve(response);
 
         } catch (error) {
@@ -129,26 +129,26 @@ export const setToArchiveNotes = async function (uri) {
     }
 }
 
-export const permanentDelete = function(uri){
-        try{
-            const response = axios.delete(`${baseUrl}/${uri}`,{
-                headers:{
-                    "x-token": `Bearer ${localStorage.getItem("token")}`
-                },
-                params:{
-                    userEmail: localStorage.getItem("userEmail")
-                }
-            });
+export const permanentDelete = function (uri) {
+    try {
+        const response = axios.delete(`${baseUrl}/${uri}`, {
+            headers: {
+                "x-token": `Bearer ${localStorage.getItem("token")}`
+            },
+            params: {
+                userEmail: localStorage.getItem("userEmail")
+            }
+        });
 
-            return response;
-        }catch(error){
-            return error.response;
-        }
+        return response;
+    } catch (error) {
+        return error.response;
+    }
 }
 
 
-export const restoreNote = async function(uri){
-    try{
+export const restoreNote = async function (uri) {
+    try {
         const response = await axios.put(`${baseUrl}/${uri}`, {
             email: localStorage.getItem("userEmail")
         }, {
@@ -159,23 +159,78 @@ export const restoreNote = async function(uri){
 
         return response;
 
-    }catch(error) {
+    } catch (error) {
         return error.response;
     }
 }
 
-export const unarchiveNote = async function(uri){
-    try{
+export const unarchiveNote = async function (uri) {
+    try {
         const response = await axios.put(`${baseUrl}/${uri}`, {
             email: localStorage.getItem("userEmail")
-        },{
-            headers:{
+        }, {
+            headers: {
                 "x-token": `Bearer ${localStorage.getItem("token")}`
             }
         })
         return response;
-    }catch(error){
+    } catch (error) {
         return error.response;
+    }
+}
+
+export const trashNote = async function (uri) {
+    try {
+        const response = await axios.put(`${baseUrl}/${uri}`, {
+            userEmail: localStorage.getItem("userEmail")
+        }, {
+            headers: {
+                "x-token": `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+
+        return response;
+
+    } catch (error) {
+        return error.response;
+    }
+}
+
+
+export const updateColor = function (uri, color) {
+    try {
+        const response = axios.put(`${baseUrl}/${uri}`, {
+            email: localStorage.getItem("userEmail"),
+            color: color
+        }, {
+            headers: {
+                "x-token": `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        return response;
+
+    } catch (error) {
+        return error.response;
+
+    }
+}
+
+
+export const updateNotes = async function (uri, data) {
+    try{
+        const response = await axios.put(`${baseUrl}/${uri}`, {
+            ...data,
+            userEmail: localStorage.getItem("userEmail")
+        }, {
+            headers: {
+                "x-token": `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+
+        return response;
+
+    }catch(error){
+        return error.response
     }
 }
 

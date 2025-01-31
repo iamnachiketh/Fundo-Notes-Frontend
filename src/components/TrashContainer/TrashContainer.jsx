@@ -35,6 +35,13 @@ function TrashContainer() {
       });
   }, [])
 
+  const handleUpdateList = (action, data) =>{
+    if(action === "delete" || action === "restore"){
+      const newNoteList = notesList.filter((value) => data.noteId !== value.noteId);
+      setNotesList(newNoteList);
+    }
+  }
+
   const handleCloseSnackBar = () => setOpen({
     isOpen: false,
     message: ""
@@ -55,7 +62,12 @@ function TrashContainer() {
     <div className="trash-container">
       <div className="trash-body-container">
         {notesList && notesList.map((data) => (
-          <NoteCard key={data.noteId} noteDetails={data} container={"trash"} />
+          <NoteCard 
+          key={data.noteId} 
+          noteDetails={data} 
+          container={"trash"} 
+          handleUpdateList={handleUpdateList}
+          />
         ))
         }
       </div>
