@@ -12,7 +12,6 @@ import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
 import AddNote from "../AddNote/AddNote";
 import * as Api from "../../utils/Api";
 
@@ -28,9 +27,7 @@ function NoteCard({ noteDetails, container, handleUpdateList, ...props }) {
 
   const noteId = searchParams.get("noteId");
 
-  const modal = noteId == noteDetails.noteId ? true : false;
-
-  const [openModal, setOpenModal] = useState(modal);
+  const [openModal, setOpenModal] = useState(noteId === noteDetails.noteId ? true : false);
 
   const openPalette = Boolean(anchorPaletteEl);
 
@@ -131,11 +128,11 @@ function NoteCard({ noteDetails, container, handleUpdateList, ...props }) {
       <p className="note-title" onClick={() => {
         navigate(`?noteId=${noteDetails.noteId}`)
         setOpenModal(true)
-      }}>{noteDetails?.title}</p>
+      }}>{noteDetails.title}</p>
       <p className="note-desc" onClick={() => {
         navigate(`?noteId=${noteDetails.noteId}`)
         setOpenModal(true)
-      }}>{noteDetails?.desc}</p>
+      }}>{noteDetails.desc}</p>
       <div className="note-icons">
         {
           container === "trash" ? (
@@ -208,7 +205,7 @@ function NoteCard({ noteDetails, container, handleUpdateList, ...props }) {
           )
         }
       </div>
-      <Modal
+      {openModal && <Modal
         open={openModal}
         onClose={() => setOpenModal(false)}
         aria-labelledby="modal-modal-title"
@@ -229,7 +226,7 @@ function NoteCard({ noteDetails, container, handleUpdateList, ...props }) {
           />
         </div>
 
-      </Modal>
+      </Modal>}
     </div>
   )
 }

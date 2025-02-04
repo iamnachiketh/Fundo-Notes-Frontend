@@ -1,14 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useReducer } from 'react';
 import { getAllNotes } from "../../utils/Api";
 import "./NotesContainer.scss";
+import useDocTitle from '../../hooks/useDocTitle';
 import NoteCard from "../NoteCard/NoteCard";
 import AddNote from "../AddNote/AddNote";
 import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-
+import CircularProgress from '@mui/material/CircularProgress';
 
 function NotesContainer() {
+
+    useDocTitle("Notes");
 
     let userEmail = localStorage.getItem("userEmail");
 
@@ -19,12 +22,17 @@ function NotesContainer() {
         message: ""
     })
 
+    const [loading, setLoad] = useState(true);
+
     const handleCloseSnackBar = () => setOpen({
         isOpen: false,
         message: ""
     });
 
     useEffect(() => {
+
+        setLoad(true);
+
         getAllNotes("notes", userEmail)
             .then((response) => {
                 if (response.data.status !== 200)
@@ -33,6 +41,7 @@ function NotesContainer() {
                         message: response.data.message
                     })
                 setNotesList(response?.data?.data);
+                setLoad(false);
             })
             .catch((error) => {
                 setOpen({
@@ -41,6 +50,9 @@ function NotesContainer() {
                 })
                 console.log(error);
             })
+
+
+        
     }, []);
 
 
@@ -57,7 +69,7 @@ function NotesContainer() {
     );
 
     const handleUpdateList = (action, data) => {
-        
+
         if (action === "addNote") {
             setNotesList([
                 ...notesList,
@@ -72,7 +84,7 @@ function NotesContainer() {
             return;
         }
 
-        if(action === "color" || action === "edit"){
+        if (action === "color" || action === "edit") {
 
             const newNoteList = notesList.filter((value) => value.noteId !== data.noteId);
             setNotesList([
@@ -87,7 +99,16 @@ function NotesContainer() {
             <div className="notes-add-note">
                 <AddNote handleUpdateList={handleUpdateList} />
             </div>
-            <div className="notes-body-container">
+            {loading ? (
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: "20px"
+                }}>
+                    <CircularProgress />
+                </div>
+            ) : (<div className="notes-body-container">
                 {notesList && notesList.map((data) => (
                     <NoteCard
                         key={data.noteId}
@@ -95,9 +116,8 @@ function NotesContainer() {
                         container={"notes"}
                         handleUpdateList={handleUpdateList}
                     />
-                ))
-                }
-            </div>
+                ))}
+            </div>)}
             <Snackbar
                 open={open.isOpen}
                 autoHideDuration={2000}

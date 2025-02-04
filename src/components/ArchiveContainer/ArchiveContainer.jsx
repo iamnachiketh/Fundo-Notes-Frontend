@@ -4,10 +4,14 @@ import NoteCard from "../NoteCard/NoteCard";
 import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import CircularProgress from '@mui/material/CircularProgress';
+import useDocTitle from "../../hooks/useDocTitle";
 import "./ArchiveContainer.scss";
 
 
 function ArchiveContainer() {
+
+  useDocTitle("Archive");
 
   const [notesList, setNoteList] = useState([]);
 
@@ -16,8 +20,13 @@ function ArchiveContainer() {
     message: ""
   })
 
+  const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
+
+    setLoading(true);
+
     getArchiveNotes("notes/archive/data")
       .then((response) => {
         if (response.data.status !== 200)
@@ -26,6 +35,7 @@ function ArchiveContainer() {
             message: response.data.message
           })
         setNoteList(response.data.data);
+        setLoading(false);
       })
       .catch((error) => {
         setOpen({
@@ -73,12 +83,21 @@ function ArchiveContainer() {
 
   return (
     <div className="archive-container">
-      <div className="archive-body-container">
+      {loading ? (
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: "20px"
+      }}>
+          <CircularProgress />
+        </div>
+      ):(<div className="archive-body-container">
         {notesList && notesList.map((data) => (
           <NoteCard key={data.noteId} noteDetails={data} container={"archive"} handleUpdateList={handleUpdateList} />
         ))
         }
-      </div>
+      </div>)}
       <Snackbar
         open={open.isOpen}
         autoHideDuration={2000}

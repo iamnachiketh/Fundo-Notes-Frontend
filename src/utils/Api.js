@@ -43,7 +43,7 @@ export const getAllNotes = function (uri, userEmail) {
                 params: {
                     userEmail,
                     page: 1,
-                    limit: 15
+                    limit: 100
                 }
             });
             console.log(response);

@@ -17,6 +17,8 @@ import "./AddNote.scss";
 
 function AddNote({ handleUpdateList, editMode = false, noteDetails = null, setOpenModal }) {
 
+    console.log(editMode);
+
     const [toggleBar, setToggleBar] = useState(editMode);
 
     const nanoid = customAlphabet("0123456789", 4);
@@ -39,17 +41,17 @@ function AddNote({ handleUpdateList, editMode = false, noteDetails = null, setOp
             const response = await updateNotes(`notes/${noteDetails.noteId}`, note);
 
             if(response.data.status === 404){
+                console.log(response.data.message);
                 setOpenSnackBar({
                     isOpen: true,
                     message: response.data.message
                 })
-                console.log(response.data.message);
             }else{
+                handleUpdateList("edit", note);
                 setOpenSnackBar({
                     isOpen: true,
                     message: "Note has been edited"
                 })
-                handleUpdateList("edit", note);
             }
             setOpenModal(false);
             return;
@@ -75,7 +77,7 @@ function AddNote({ handleUpdateList, editMode = false, noteDetails = null, setOp
 
         addNote("notes", updateNote)
             .then((response) => {
-                setOpen({
+                setOpenSnackBar({
                     isOpen: true,
                     message: response.data.message
                 })
@@ -86,7 +88,7 @@ function AddNote({ handleUpdateList, editMode = false, noteDetails = null, setOp
                 });
             })
             .catch((error) => {
-                setOpen({
+                setOpenSnackBar({
                     isOpen: true,
                     message: error.data.message
                 })
