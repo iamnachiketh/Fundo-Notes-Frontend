@@ -235,4 +235,27 @@ export const updateNotes = async function (uri, data) {
 }
 
 
+export const searchNote = async function (uri, searchQuery) {
+    try{
+        const response = await axios.get(`${baseUrl}/${uri}`, {
+            headers: {
+                "x-token": `Bearer ${localStorage.getItem("token")}`
+
+            },
+            params: {
+                email: localStorage.getItem("userEmail"),
+                search: searchQuery,
+                page: 1,
+                limit: 100
+            }
+        });
+
+        return response;
+
+    }catch(error){
+        return error.response;
+    }
+}
+
+
 

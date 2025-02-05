@@ -1,11 +1,14 @@
 import './App.scss'
 import Route from "./route/Route";
+import Search from "./components/Search/Search";
 
 function App() {
 
   return (
     <>
-      <Route />
+      <Search>
+        <Route />
+      </Search>
     </>
   )
 }

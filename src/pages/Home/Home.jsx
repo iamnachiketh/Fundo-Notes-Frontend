@@ -1,6 +1,6 @@
 import "./Home.scss";
-import Dashboard from "../../components/dashboard/Dashboard";
 import SideBar from "../../components/SideBar/SideBar";
+import Dashboard from "../../components/Dashboard/Dashboard";
 import { Outlet } from "react-router-dom";
 
 

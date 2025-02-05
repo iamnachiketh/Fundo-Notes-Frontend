@@ -1,6 +1,6 @@
-import { useState, useEffect, useReducer } from 'react';
-import { getAllNotes } from "../../utils/Api";
-import "./NotesContainer.scss";
+import { useState, useEffect, useContext } from 'react';
+import { getAllNotes, searchNote } from "../../utils/Api";
+import { SearchQueryContext } from "../Search/Search";
 import useDocTitle from '../../hooks/useDocTitle';
 import NoteCard from "../NoteCard/NoteCard";
 import AddNote from "../AddNote/AddNote";
@@ -8,6 +8,7 @@ import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import CircularProgress from '@mui/material/CircularProgress';
+import "./NotesContainer.scss";
 
 function NotesContainer() {
 
@@ -23,6 +24,8 @@ function NotesContainer() {
     })
 
     const [loading, setLoad] = useState(true);
+
+    const searchQuery = useContext(SearchQueryContext);
 
     const handleCloseSnackBar = () => setOpen({
         isOpen: false,
@@ -52,8 +55,31 @@ function NotesContainer() {
             })
 
 
-        
+
     }, []);
+
+    useEffect(() => {
+        setLoad(true);
+
+        searchNote("notes/note-search/search", searchQuery)
+        .then((response) => {
+            setLoad(false);
+            if(response.data.data.length <= 0){
+                setOpen({
+                    isOpen: true,
+                    message: "No such note"
+                });
+                setNotesList([]);
+                return;
+            }
+
+            setNotesList(response.data.data);
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+
+    }, [searchQuery]);
 
 
     const action = (

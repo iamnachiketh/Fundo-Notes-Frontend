@@ -1,12 +1,24 @@
-import './Dashboard.scss'
+import { useContext, useState } from "react";
+import { UpdateQueryContext } from "../Search/Search";
 import MenuIcon from '@mui/icons-material/Menu';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
+import './Dashboard.scss'
 
 
 
 function Dashboard() {
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const updateQuery = useContext(UpdateQueryContext);
+
+  const handleSearchChange = (event) => {
+    updateQuery(event.target.value)
+    setSearchQuery(event.target.value);
+  };
+
   return (
     <div className="dashboard">
       <div className="dashboard-header">
@@ -23,26 +35,29 @@ function Dashboard() {
         <div className="dashboard-header-text">Keep</div>
       </div>
       <div className="dashboard-search-bar-container">
-      <TextField
+        <TextField
           id="filled-basic"
           placeholder="Search"
           variant="outlined"
           fullWidth
+          value={searchQuery}
+          onChange={handleSearchChange}
           className="dashboard-search-bar"
           InputProps={{
             startAdornment: (
-              <InputAdornment 
-              position="start"
-              className="search-icon"
+              <InputAdornment
+                position="start"
+                className="search-icon"
               >
                 <SearchIcon />
               </InputAdornment>
             ),
           }}
+
         />
       </div>
       <div className="dashboard-user-info">
-          
+
       </div>
     </div >
   )
