@@ -2,23 +2,26 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import SideBar from '../SideBar';
 import { useNavigate } from 'react-router-dom';
+import { vi } from "vitest";
 
-// Mock the useNavigate hookh
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: jest.fn(),
-}));
+vi.mock('react-router-dom', async () => {
+    const actual = await import('react-router-dom');
+    return {
+        ...actual,
+        useNavigate: vi.fn(),
+    };
+});
 
 describe('SideBar Component', () => {
     let mockNavigate;
 
     beforeEach(() => {
-        mockNavigate = jest.fn();
+        mockNavigate = vi.fn();
         useNavigate.mockImplementation(() => mockNavigate);
     });
 
     afterEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     test('renders SideBar component correctly', () => {
@@ -28,7 +31,6 @@ describe('SideBar Component', () => {
             </Router>
         );
 
-        // Check if all icons are rendered
         expect(screen.getByTestId('lightbulb-icon')).toBeInTheDocument();
         expect(screen.getByTestId('notifications-icon')).toBeInTheDocument();
         expect(screen.getByTestId('edit-icon')).toBeInTheDocument();

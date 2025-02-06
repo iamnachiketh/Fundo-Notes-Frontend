@@ -17,6 +17,7 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.1",
     "@mui/material": "^6.4.1",
+    "@testing-library/user-event": "^14.6.1",
     "axios": "^1.7.9",
     "fundo-notes": "file:",
     "nanoid": "^5.0.9",

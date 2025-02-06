@@ -11,29 +11,31 @@ function SideBar() {
 
   return (
     <div className="sidebar-container">
-      <LightbulbOutlinedIcon
-        className="sidebar-icon"
-        onClick={() => navigate("/home/notes")}
-        data-testid="lightbulb-icon"
-      />
-      <NotificationsNoneOutlinedIcon
-        className="sidebar-icon"
-        data-testid="notifications-icon"
-      />
-      <EditOutlinedIcon
-        className="sidebar-icon"
-        data-testid="edit-icon"
-      />
-      <ArchiveOutlinedIcon
-        className="sidebar-icon"
-        onClick={() => navigate("/home/archive")}
-        data-testid="archive-icon"
-      />
-      <DeleteOutlineOutlinedIcon
-        className="sidebar-icon"
-        onClick={() => navigate("/home/trash")}
-        data-testid="delete-icon"
-      />
+      <div className="sidebar-wrapper">
+        <LightbulbOutlinedIcon
+          className="sidebar-icon"
+          onClick={() => navigate("/home/notes")}
+          data-testid="lightbulb-icon"
+        />
+        <NotificationsNoneOutlinedIcon
+          className="sidebar-icon"
+          data-testid="notifications-icon"
+        />
+        <EditOutlinedIcon
+          className="sidebar-icon"
+          data-testid="edit-icon"
+        />
+        <ArchiveOutlinedIcon
+          className="sidebar-icon"
+          onClick={() => navigate("/home/archive")}
+          data-testid="archive-icon"
+        />
+        <DeleteOutlineOutlinedIcon
+          className="sidebar-icon"
+          onClick={() => navigate("/home/trash")}
+          data-testid="delete-icon"
+        />
+      </div>
     </div>
   );
 }

@@ -1,8 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import Dashboard from '../Dashboard';
 import { UpdateQueryContext } from '../../Search/Search';
+import { vi } from "vitest";
 
-const mockUpdateQuery = jest.fn();
+const mockUpdateQuery = vi.fn();
 
 const renderDashboard = () => {
     return render(
@@ -14,7 +15,7 @@ const renderDashboard = () => {
 
 describe('Dashboard Component', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     test('renders Dashboard component correctly', () => {

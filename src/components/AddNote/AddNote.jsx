@@ -58,7 +58,7 @@ function AddNote({ handleUpdateList, editMode = false, noteDetails = null, setOp
         }
 
         if (!note.title.trim() || !note.desc.trim()) {
-            setOpen({
+            setOpenSnackBar({
                 isOpen: true,
                 message: "Please enter title and description"
             });
