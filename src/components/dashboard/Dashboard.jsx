@@ -23,7 +23,7 @@ function Dashboard() {
     <div className="dashboard">
       <div className="dashboard-header">
         <div className="dashboard-header-menu">
-          <MenuIcon />
+          <MenuIcon data-testid="menu-icon" />
         </div>
         <div className="dashboard-header-logo">
           <img
@@ -49,7 +49,7 @@ function Dashboard() {
                 position="start"
                 className="search-icon"
               >
-                <SearchIcon />
+                <SearchIcon data-testid="search-icon" />
               </InputAdornment>
             ),
           }}

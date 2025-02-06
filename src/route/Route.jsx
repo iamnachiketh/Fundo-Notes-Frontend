@@ -1,4 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { AuthRoute } from "./AuthRoute"
+import { ProtectedRoute } from "./ProtectedRoute"
 import Login from '../pages/Login/Login';
 import Signup from '../pages/SignUp/Signup';
 import Home from '../pages/Home/Home';
@@ -10,28 +12,28 @@ function Route() {
 
     const appRoute = createBrowserRouter([
         {
-            path:"/",
-            element: <Login />
+            path: "/",
+            element: <AuthRoute> <Login /> </AuthRoute>
         },
         {
-            path:"/signup",
-            element: <Signup />
+            path: "/signup",
+            element: <AuthRoute> <Signup /> </AuthRoute> 
         },
         {
             path: "/home",
-            element: <Home />,
-            children:[
+            element: <ProtectedRoute> <Home /> </ProtectedRoute>,
+            children: [
                 {
                     path: "notes",
-                    element: <NotesContiner/>
+                    element: <NotesContiner />
                 },
                 {
                     path: "archive",
-                    element: <ArchiveContainer/>
+                    element: <ArchiveContainer />
                 },
                 {
                     path: "trash",
-                    element: <TrashContainer/>
+                    element: <TrashContainer />
                 }
             ]
         }
